@@ -1,3 +1,5 @@
+package dev.bicutoru.kotlin
+
 /**
  * A generic stack implementation using a fixed-size array.
  *
@@ -10,18 +12,10 @@
  *
  * @param <T> the type of elements stored in the stack
  * */
-public class ArrayStack<T> {
+class ArrayStack<T>(private val capacity: Int) {
 
-    private T[] elements;
-    private int top;
-    private int capacity;
-
-    @SuppressWarnings("unchecked")
-    public ArrayStack(int capacity) {
-        this.elements = (T[]) new Object[capacity];
-        this.top = -1;
-        this.capacity = capacity;
-    }
+    private val elements: Array<T?> = arrayOfNulls(size = capacity)
+    private var top: Int = -1
 
     /**
      * Checks if the stack contains no elements.
@@ -30,9 +24,7 @@ public class ArrayStack<T> {
      *
      * @return true if the stack is empty, false otherwise
      * */
-    public boolean isEmpty() {
-        return top == -1;
-    }
+    fun isEmpty(): Boolean = top == -1
 
     /**
      *  Adds an element to the top of the stack.
@@ -42,11 +34,10 @@ public class ArrayStack<T> {
      * @param value the element to be pushed onto the stack
      * @throws IllegalStateException if the stack is full
      * */
-    public void push(T value) {
-        if (top == capacity - 1) {
-            throw new IllegalStateException("Stack is full");
-        }
-        elements[++top] = value;
+    fun push(value: T) {
+        if (top == capacity - 1) throw IllegalStateException("Stack is full")
+
+        elements[++top] = value
     }
 
     /**
@@ -56,15 +47,15 @@ public class ArrayStack<T> {
      *
      * @return the element at the top of the stack
      * @throws IllegalStateException if the stack is empty
-    * */
-    public T pop() {
-        if (isEmpty()) {
-            throw new IllegalStateException("Stack is empty");
-        }
-        T value = elements[top];
-        elements[top] = null;
-        top--;
-        return value;
+     * @throws IllegalStateException if the internal state is inconsistent (null element)
+     * */
+    fun pop(): T {
+        if (isEmpty()) throw IllegalStateException("Stack is empty")
+
+        val value = elements[top] ?: throw IllegalStateException("Unexpected null value")
+        elements[top] = null
+        top--
+        return value
     }
 
     /**
@@ -74,12 +65,12 @@ public class ArrayStack<T> {
      *
      * @return the element at the top of the stack
      * @throws IllegalStateException if the stack is empty
+     * @throws IllegalStateException if the internal state is inconsistent (null element)
      * */
-    public T peek() {
-        if (isEmpty()) {
-            throw new IllegalStateException("Stack is empty");
-        }
-        return elements[top];
+    fun peek(): T {
+        if (isEmpty()) throw IllegalStateException("Stack is empty")
+
+        return elements[top] ?: throw IllegalStateException("Unexpected null value")
     }
 
     /**
@@ -89,8 +80,5 @@ public class ArrayStack<T> {
      *
      * @return the number of elements in the stack
      * */
-    public int size() {
-        return top + 1;
-    }
-
+    fun size(): Int = top + 1
 }
